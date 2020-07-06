@@ -1,0 +1,99 @@
+---
+title: "Henderson/Major Family Migration"
+knit: (function(input_file, encoding) {
+  out_dir <- 'docs';
+  rmarkdown::render(input_file,
+ encoding=encoding,
+ output_file=file.path(dirname(input_file), out_dir, 'index.html'))})
+output: html_document
+---
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(fig.width=12, fig.height=8)
+library(tidyverse)
+library(foreign)
+library(readr)
+library(sf)
+library(mapview)
+library(here)
+library(raster)
+library(ggmap)
+register_google(key="AIzaSyB4d16tJiYyY5agiifZz8EP9AB1bpEVsMg")
+
+
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+cle_red <- st_read(here("data", "cartodb-query.shp"))
+
+cle_red <- cle_red %>% 
+  mutate(color = case_when(
+    holc_grade == "A" ~ "green", 
+    holc_grade == "B" ~ "blue", 
+    holc_grade == "C" ~ "yellow", 
+    holc_grade == "D" ~ "red"
+    
+  )
+           )
+
+
+
+
+geocode("West Side Market")
+geocode("401 Huntmere, Bay Village, OH")
+geocode("22687 Mastick Rd, Fairview Park, OH")
+geocode("135 Barberry Drive, Berea, OH")
+geocode("W 66th, Cleveland, OH")
+geocode("2000 W 44th St, Cleveland, OH")
+geocode("W 123rd St and Lorain Ave, Cleveland, OH")
+geocode("4155 w 48th st, cleveland, OH")
+
+homes <- data.frame(Home = c("Dad",     "Mom2",    "Mike1",   "Granddad1", "Granddad2", "Grandma"), 
+                    lat = c( 41.48365,  41.42067,  41.37929,  41.4589,     41.46033,   41.47926), 
+                    lon = c(-81.90635, -81.87059, -81.84788, -81.73336,   -81.77372 , -81.71668), stringsAsFactors = F)
+
+
+homes_mom <- data.frame(home = c("Grandma","Mom1", "Mom2"), 
+                        description = c("This area comprises the immediate west side of Cleveland and was laid out about 1890; now fully built up; very good school, store, shopping and transportation facilities. Better residential streets are Franklin, W. 45th, W. 47th and W. 48th St. Poorest section is easterly portion of Fulton Rd. Upkeep and maintenance is spotty and many homes suffer from lack of paint. Sadly lacking in uniformity- everything here from cottages to three-story residences. Also a fairly heavy percentage of two homes on single lots and five homes on two lots (at intersections mostly); foreign encroachment is heavy and size of families is noticeably larger. People are coming in from red area (north) and the east end (from the flats) as the better element is emigrating to areas further west. Not altogether bad but rapidly declining in desirability. Presence of all of the above factors makes this a weak third grade area but it is certain to fall another notch before many years due to type of transition.", "This level area, located in West Cleveland and lying immediately southwest of Brokkside Park, is approximately 60% built up with single and two-family homes situated on 40' lots. The easterly section of area was platted in the warly 1920's and the westerly portion saw development in the late 1920's. The area has all utilities installed and all streets paved, with the exception of W. 56th and W. 57th (south of Memphis); a small group of retail stores is concentrated at W. 48th and Memphis Ave. with a thin scattering on the numbered streets south of Memphis; convenient to schools and churches; transportation is by bus service on Memphis and W. 73rd - but transfer to street car is necessary to reach downtown. The single and two-family homes are intermingled, however the eastern half shows a predominance of two-family homes; new construction is concentrated along W. 56th and W. 57th on which streets some 15 new homes ($5200-6350) were erected within the past 12 months. Practically all of the unimproved lots are individually owned. The area will, in all likelihood, retain its present standard of desirability for several years due to proximity to Brookside (Zoological) Park and also because of its abuttment to first grade area (A-14). Likewise, construction of new bridge over Brookside Park has made this area more accessible and there has been a noticebale increase in demand since its construction. Some years ago the Representative Realty Co. had begun construction of many homes in this area and went broke leaving several skeletons standing in addition to about 50 completed new homes; the company's interests were purchased by the Sammon Investment Co. who, through a sound selling campaign, was successful in disposing of all but 6 of the properties. For instance, out of some 40 new homes located in W. 48th, the Sammon Co. sold 34 - each selling for a little over $7000 with a $500 down payment, balance by first bank loan and junior mortgage. It is noticeable that not one of the homes sold by Sammon Co. was foreclosed or taken back during the entire depression period. Institutional holdings in this area are below average at present.", ""), 
+                        shifting_infiltration = c("Second generation German", "20% of occupants are of second generation - mostly German", ""), 
+                        foreign = c("40-50%- Polish - Hungarian - German", "2%", ""), 
+                        negro = c("", "0", ""), 
+                        
+                        lat = c(41.47926, 41.44345, 41.42067), 
+                        lon = c(-81.71668, -81.71886, -81.87059), stringsAsFactors = F)
+
+homes_dad <- data.frame(home = c("Dad_kid", "Granddad1", "Granddad2"),
+                        description = c("This large area, eastern half fronting on Lake Erie with beach faciliteis was laid out about 30 years ago and is now 15% built up. Residential development has been concentrated alrgely in the eastern half principally along the lake. The advantage of having teh nearest desirable beach faciliteis to teh downtown area is a drawing power butu early spotty development somewhat depreciates the better homes. However, restrictions do not permit summer cottage construction now and teh few exlating structures are steadily being removed. Development has been slow due to cutlying location and weak transportation (hourly bus). However, 30 new homes were constructed here in the past 12 months principally on Wolf Rd., Bosborn Rd., and Oakmoor Ave. (eastern part). All utilities are installed; streets are concrete and oil macadam; average lot frontage is 40 ft. Future growth of area will be along conservative lines but attractiveness as a residential section will increase as the closer-in areas become mor fully developed. The presence of the New York Central RR running parallel with the southern boundary of area as a sales resistant factor is largely discounted by local realtors, since the roadbed is hedged in by trees.", "Area laid out in 1899; level topography; now completely built up; good transportation; convenient to schools, churches and stores. Foreign infiltration began about 30 years ago; Bohemian and Slavish settlements are built around their churches and schools and will remain intact for several years. About 75% of the houses are without basements. Sales activity is weak. No FHA lending and banks and building and loan companies are also unwilling to lend here. Northern lane of area lies within 1/2 mile of several stock yards and packing houses and is affected by the odors from these. Heavy traffic on Denison Avenue. Homes are getting older, sadly in need of repairs and paint; on the whole, the area will continue in its downward trend, due to age and obsolescence.", "Level topography with slight incline from W. 110th to W. 115th; eastern section of area platted in 1910, western section in 1917-1918; now 70% built up; average lot front 40 ft.; paved streets; all utilities installed; good transportation; good school and store facilities. That section of area lying west of W. 123rd St. was originally laid out with 25 ft. lots; most purchasers, however, bought also the adjoining parcel although some homes have been built on the narrow lots. The entire northern section of area borders on industry and adjacent properties are somewhat affected by smoke, dirt and soot. Lorain Ave. is the main thoroughfare with a retail store concentration west of W. 117th to W. 119th and at W. 130th and Lorain. Most stores have living room suites and small apartments above; large apartment buildings are located along Bosworth Ave. The West-side Post Office and Sears-Roebuck Store also located in Lorain business section. The area, although gaining in commercial influence, is still desirable to those who want to live close in. Rental prices, especially in the lower brackets, increased at least 5%. About 12 homes built here last year. The area is accorded a third grade rating."), 
+                        shifting_infiltration=c("", "Mild infiltration of Italians to the northeast sections of area.", "Heavy second & third generation German"),
+                        foreign = c("Only a few families", "90%- Bohemian-Slavish", "10%- German"),
+                        negro = c("", "0", ""),
+                    lat = c( 41.48365, 41.4589, 41.46033), 
+                    lon = c(-81.90635, -81.73336, -81.77372 ), stringsAsFactors = F)
+homes_me <- data.frame(home = c( "Me"), 
+                    lat = c( 41.37929), 
+                    lon = c(-81.84788), stringsAsFactors = F)
+
+
+mom_sf <- st_as_sf(homes_mom, coords = c("lon", "lat"), crs = st_crs(cle_red))
+dad_sf <- st_as_sf(homes_dad, coords = c("lon", "lat"), crs = st_crs(cle_red))
+me_sf <- st_as_sf(homes_me, coords = c("lon", "lat"), crs = st_crs(cle_red))
+homes_sf <- st_as_sf(homes, coords = c("lon", "lat"), crs = st_crs(cle_red))
+
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+
+m1 <- mapview(cle_red, zcol = "holc_grade", col.regions = c("green", "blue", "yellow", "red"), alpha.regions=.5) 
+
+m2 <- m1 + mapview(mom_sf, zcol = "home",col.regions="purple") 
+
+m3 <- m2 +  mapview(dad_sf, zcol = "home",col.regions="orange") 
+
+m4 <- m3 + mapview(me_sf, zcol = "home",col.regions="black")
+
+m4
+
+```
+
